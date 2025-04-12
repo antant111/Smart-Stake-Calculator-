@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Stake Profit Calculator</title>
+  <link rel="icon" href="icon-192x192.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 0 10px;
+    }
+    .calculator {
+      background: #ffffff10;
+      padding: 2rem;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 480px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: #00ffc8;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.8rem;
+      font-weight: bold;
+      color: #e0e0e0;
+      font-size: 1.1rem;
+    }
+    input {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      background-color: #fff;
+      color: #333;
+    }
+    button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      background: #00ffc8;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #00bfa5;
+      transform: scale(1.03);
+    }
+    #result, #percent-result, #total-return {
+      margin-top: 1.2rem;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Smart Stake Profit Calculator</h1>
+
+    <label for="bank">Starting Bank (£):</label>
+    <input type="number" id="bank" step="0.01" placeholder="e.g. 1000" oninput="calculateTwoPercent()">
+
+    <div id="percent-result"></div>
+
+    <label for="profit">Desired Profit (£):</label>
+    <input type="number" id="profit" step="0.01" placeholder="e.g. 31.20">
+
+    <label for="odds">Odds (Decimal):</label>
+    <input type="number" id="odds" step="0.01" placeholder="e.g. 3.50">
+
+    <button onclick="calculateStake()">Calculate Stake</button>
+
+    <div id="result"></div>
+    <div id="total-return"></div>
+  </div>
+
+  <script>
+    function calculateTwoPercent() {
+      const bank = parseFloat(document.getElementById('bank').value);
+      if (!isNaN(bank)) {
+        const twoPercent = bank * 0.02;
+        document.getElementById('percent-result').innerText = `2% of Bank: £${twoPercent.toFixed(2)}`;
+      } else {
+        document.getElementById('percent-result').innerText = '';
+      }
+    }
+
+    function calculateStake() {
+      const profit = parseFloat(document.getElementById('profit').value);
+      const odds = parseFloat(document.getElementById('odds').value);
+
+      if (isNaN(profit) || isNaN(odds) || odds <= 1) {
+        document.getElementById('result').innerText = 'Please enter valid profit and odds greater than 1.';
+        return;
+      }
+
+      const stake = profit / (odds - 1); 
+      const totalReturn = stake + profit;
+
+      document.getElementById('result').innerText = `Stake Required: £${stake.toFixed(2)} (Including Stake Returned)`;
+      document.getElementById('total-return').innerText = `Total Return (Profit + Stake): £${totalReturn.toFixed(2)}`;
+    }
+  </script>
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }).catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
